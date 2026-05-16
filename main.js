@@ -13,6 +13,7 @@ A minimal editor — **write** on the left, *read* on the right.
 - Type markdown in the editor
 - Preview updates in real time
 - Use the toolbar for quick formatting
+- Hit **share** — the URL updates live and contains your full document
 
 ## Code
 
