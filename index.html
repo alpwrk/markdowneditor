@@ -3,54 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MarkDown</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<title>md</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-<header>
-  <div class="logo">Markdown</div>
-  <div style="display:flex;align-items:center;gap:16px;">
-    <div class="wordcount" id="wc">0 words</div>
-    <button class="share-btn" id="share-btn" onclick="copyLink()">share</button>
-  </div>
-</header>
-
-<div class="toolbar">
-  <button class="tb-btn" onclick="ins('**','**')">bold</button>
-  <button class="tb-btn" onclick="ins('*','*')">italic</button>
-  <button class="tb-btn" onclick="ins('~~','~~')">strike</button>
-  <button class="tb-btn" onclick="ins('`','`')">code</button>
-  <div class="sep"></div>
-  <button class="tb-btn" onclick="insl('# ')">h1</button>
-  <button class="tb-btn" onclick="insl('## ')">h2</button>
-  <button class="tb-btn" onclick="insl('### ')">h3</button>
-  <div class="sep"></div>
-  <button class="tb-btn" onclick="insl('> ')">quote</button>
-  <button class="tb-btn" onclick="insl('- ')">list</button>
-  <button class="tb-btn" onclick="insl('1. ')">ol</button>
-  <button class="tb-btn" onclick="insBlock()">```</button>
-  <div class="sep"></div>
-  <button class="tb-btn" onclick="insLink()">[link]</button>
-  <button class="tb-btn" onclick="insl('---\n')">hr</button>
-  <div class="sep"></div>
-  <button class="tb-btn" onclick="clearAll()">clear</button>
-</div>
-
-<div class="main">
-  <div class="pane">
-    <div class="pane-label">editor</div>
-    <textarea id="editor" spellcheck="false" placeholder="write markdown…"></textarea>
-  </div>
-  <div class="pane">
-    <div class="pane-label">preview</div>
-    <div class="preview" id="preview"></div>
-  </div>
-</div>
-
+<main id="main">
+	<textarea id="in" spellcheck="false" autofocus></textarea>
+	<article id="out"></article>
+</main>
+<footer id="bar">
+	<span id="st-mode">md</span>
+	<button id="st-clear">clear</button>
+	<button id="st-reset">reset</button>
+	<span id="st-msg"></span>
+	<span id="st-pos">1:1</span>
+	<span id="st-cnt">0w 0c</span>
+</footer>
+<script src="config.js"></script>
+<script src="md.js"></script>
 <script src="main.js"></script>
 </body>
 </html>

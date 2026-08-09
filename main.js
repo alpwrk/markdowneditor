@@ -1,113 +1,160 @@
-const editor = document.getElementById('editor');
-const preview = document.getElementById('preview');
-const wc = document.getElementById('wc');
+const inp = document.getElementById('in');
+const out = document.getElementById('out');
+const st = {
+	mode: document.getElementById('st-mode'),
+	msg: document.getElementById('st-msg'),
+	pos: document.getElementById('st-pos'),
+	cnt: document.getElementById('st-cnt'),
+};
 
-marked.setOptions({ breaks: true, gfm: true });
+let msgtimer, view = 0, pending = null;
 
-const demo = `# Markdown Editor
-
-A minimal editor — **write** on the left, *read* on the right.
-
-## Usage
-
-- Type markdown in the editor
-- Preview updates in real time
-- Use the toolbar for quick formatting
-- Hit **share** — the URL updates live and contains your full document
-
-## Code
-
-\`\`\`js
-const render = () => preview.innerHTML = marked.parse(editor.value);
-editor.addEventListener('input', render);
-\`\`\`
-
-> Simplicity is the ultimate sophistication.
-
-| Element | Syntax |
-|---------|--------|
-| Heading | \`# H1\` |
-| Bold | \`**text**\` |
-| Code | \`\`code\`\` |
-`;
-
-function loadFromUrl() {
-  const hash = window.location.hash.slice(1);
-  if (!hash) return false;
-  try {
-    const decoded = LZString.decompressFromEncodedURIComponent(hash);
-    if (decoded) { editor.value = decoded; return true; }
-  } catch {}
-  return false;
+function enc(s) {
+	const b = new TextEncoder().encode(s);
+	let bin = '';
+	for (const c of b) bin += String.fromCharCode(c);
+	return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
 
-function updateUrl() {
-  const compressed = LZString.compressToEncodedURIComponent(editor.value);
-  history.replaceState(null, '', '#' + compressed);
+function dec(s) {
+	const bin = atob(s.replace(/-/g, '+').replace(/_/g, '/'));
+	const b = Uint8Array.from(bin, c => c.charCodeAt(0));
+	return new TextDecoder().decode(b);
+}
+
+function msg(s) {
+	st.msg.textContent = s;
+	st.msg.className = '';
+	clearTimeout(msgtimer);
+	msgtimer = setTimeout(() => st.msg.textContent = '', config.msgtimeout);
+}
+
+function ask(name, question, run) {
+	clearTimeout(msgtimer);
+	pending = { name, run };
+	st.msg.textContent = question + '? y/N';
+	st.msg.className = 'ask';
+}
+
+function answer(yes) {
+	const p = pending;
+	pending = null;
+	st.msg.textContent = '';
+	st.msg.className = '';
+	if (yes && p) { p.run(); render(); } else msg('cancelled');
+}
+
+function status() {
+	const v = inp.value, upto = v.slice(0, inp.selectionStart).split('\n');
+	st.pos.textContent = upto.length + ':' + (upto[upto.length - 1].length + 1);
+	st.cnt.textContent = (v.trim() ? v.trim().split(/\s+/).length : 0) + 'w ' +
+		v.length + 'c';
 }
 
 function render() {
-  preview.innerHTML = marked.parse(editor.value);
-  const words = editor.value.trim().split(/\s+/).filter(Boolean).length;
-  wc.textContent = words + ' word' + (words !== 1 ? 's' : '');
-  updateUrl();
+	out.innerHTML = md(inp.value);
+	status();
+	if (config.syncurl)
+		history.replaceState(null, '', location.pathname + '#' + enc(inp.value));
+	if (config.autosave) localStorage.setItem(config.autosave, inp.value);
 }
 
-if (!loadFromUrl()) {
-  editor.value = demo;
+function edit(text, from, to) {
+	inp.setRangeText(text, from, to, 'preserve');
 }
-render();
 
-editor.addEventListener('input', render);
+const cmd = {
+	wrap([a, b]) {
+		const s = inp.selectionStart, e = inp.selectionEnd;
+		edit(a + inp.value.slice(s, e) + b, s, e);
+		inp.selectionStart = s + a.length;
+		inp.selectionEnd = e + a.length;
+	},
+	prefix(p) {
+		const s = inp.selectionStart;
+		const bol = inp.value.lastIndexOf('\n', s - 1) + 1;
+		edit(p, bol, bol);
+		inp.selectionStart = inp.selectionEnd = s + p.length;
+	},
+	link() {
+		const s = inp.selectionStart, e = inp.selectionEnd;
+		const sel = inp.value.slice(s, e) || 'text';
+		edit('[' + sel + '](url)', s, e);
+		inp.selectionStart = s + sel.length + 3;
+		inp.selectionEnd = s + sel.length + 6;
+	},
+	share() {
+		navigator.clipboard.writeText(location.href)
+			.then(() => msg('url copied (' + location.href.length + 'b)'))
+			.catch(() => msg('clipboard denied'));
+	},
+	zoom() {
+		view = view === 2 ? 0 : 2;
+		document.body.dataset.view = view;
+		msg(view ? 'preview' : 'split');
+	},
+	split() {
+		config.split = config.split === 'v' ? 'h' : 'v';
+		document.body.dataset.split = config.split;
+	},
+	clear() {
+		ask('clear', 'clear the document', () => {
+			inp.value = '';
+			msg('cleared');
+		});
+	},
+	reset() {
+		ask('reset', 'reset to the default document', () => {
+			inp.value = config.greeting;
+			msg('reset');
+		});
+	},
+};
 
-editor.addEventListener('keydown', e => {
-  if (e.key === 'Tab') {
-    e.preventDefault();
-    const s = editor.selectionStart;
-    editor.value = editor.value.slice(0, s) + '  ' + editor.value.slice(editor.selectionEnd);
-    editor.selectionStart = editor.selectionEnd = s + 2;
-    render();
-  }
+document.addEventListener('keydown', e => {
+	if (pending) {
+		if (['Shift', 'Control', 'Alt', 'Meta'].includes(e.key)) return;
+		e.preventDefault();
+		return answer(e.key === 'y' || e.key === 'Y');
+	}
+	if (e.key === 'Tab' && e.target === inp) {
+		e.preventDefault();
+		const t = config.softtabs ? ' '.repeat(config.tabwidth) : '\t';
+		edit(t, inp.selectionStart, inp.selectionEnd);
+		return render();
+	}
+	for (const [ctrl, key, fn, arg] of keys) {
+		if (!!ctrl !== (e.ctrlKey || e.metaKey) || e.altKey) continue;
+		if (e.key.toLowerCase() !== key.toLowerCase()) continue;
+		e.preventDefault();
+		cmd[fn](arg);
+		inp.focus();
+		return render();
+	}
 });
 
-function ins(before, after) {
-  const s = editor.selectionStart, e = editor.selectionEnd;
-  const sel = editor.value.slice(s, e);
-  editor.value = editor.value.slice(0, s) + before + sel + after + editor.value.slice(e);
-  editor.selectionStart = s + before.length;
-  editor.selectionEnd = e + before.length;
-  editor.focus(); render();
-}
+for (const name of ['clear', 'reset'])
+	document.getElementById('st-' + name).addEventListener('click', () => {
+		if (pending) return answer(pending.name === name);
+		cmd[name]();
+		inp.focus();
+	});
 
-function insl(before) {
-  const s = editor.selectionStart;
-  const ls = editor.value.lastIndexOf('\n', s - 1) + 1;
-  editor.value = editor.value.slice(0, ls) + before + editor.value.slice(ls);
-  editor.selectionStart = editor.selectionEnd = ls + before.length;
-  editor.focus(); render();
-}
+inp.addEventListener('input', render);
+['click', 'keyup', 'select'].forEach(ev => inp.addEventListener(ev, status));
 
-function insBlock() { ins('```\n', '\n```'); }
+window.addEventListener('hashchange', () => {
+	const h = location.hash.slice(1);
+	try { if (h && dec(h) !== inp.value) { inp.value = dec(h); render(); } } catch {}
+});
 
-function insLink() {
-  const s = editor.selectionStart, e = editor.selectionEnd;
-  const sel = editor.value.slice(s, e) || 'text';
-  const rep = `[${sel}](url)`;
-  editor.value = editor.value.slice(0, s) + rep + editor.value.slice(e);
-  editor.selectionStart = s + sel.length + 3;
-  editor.selectionEnd = s + rep.length - 1;
-  editor.focus(); render();
-}
+document.body.dataset.split = config.split;
+document.body.dataset.view = 0;
 
-function clearAll() {
-  if (confirm('Clear everything?')) { editor.value = ''; render(); editor.focus(); }
-}
+try {
+	const h = location.hash.slice(1);
+	inp.value = h ? dec(h) :
+		(config.autosave && localStorage.getItem(config.autosave)) || config.greeting;
+} catch { inp.value = config.greeting; }
 
-function copyLink() {
-  navigator.clipboard.writeText(window.location.href).then(() => {
-    const btn = document.getElementById('share-btn');
-    const orig = btn.textContent;
-    btn.textContent = 'copied!';
-    setTimeout(() => { btn.textContent = orig; }, 1500);
-  });
-}
+render();
