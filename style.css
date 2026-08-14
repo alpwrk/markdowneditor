@@ -32,6 +32,35 @@ body {
 	overflow: hidden;
 }
 
+#tools {
+	display: flex;
+	align-items: center;
+	gap: 2px;
+	height: var(--bar);
+	padding: 0 6px;
+	background: var(--bg);
+	border-bottom: 1px solid var(--bord);
+	white-space: nowrap;
+	overflow-x: auto;
+}
+
+#tools:empty { display: none }
+#tools::-webkit-scrollbar { height: 0 }
+
+#tools button {
+	background: none;
+	border: 0;
+	color: var(--fg2);
+	font: 12px/var(--bar) var(--font);
+	height: 100%;
+	padding: 0 6px;
+	cursor: pointer;
+}
+
+#tools button:hover { background: var(--sel); color: var(--hi) }
+#tools button:active { background: var(--hi); color: var(--bg) }
+#tools i { flex: none; width: 1px; height: 60%; margin: 0 5px; background: var(--bord) }
+
 #main { display: flex; flex: 1; min-height: 0 }
 body[data-split="h"] #main { flex-direction: column }
 

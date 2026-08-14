@@ -9,6 +9,9 @@ const config = {
 
 	split: 'v',
 
+	/* toolbar layout: keys from the table below, | is a separator, '' hides it */
+	toolbar: 'b i d e | 1 2 3 | . 8 7 | k - Enter',
+
 	greeting: [
 		'# md',
 		'',
@@ -40,22 +43,23 @@ const config = {
 	].join('\n'),
 };
 
+/* ctrl, key, command, argument, toolbar label */
 const keys = [
-	[1, 'b',      'wrap',   ['**', '**']],
-	[1, 'i',      'wrap',   ['*', '*']],
-	[1, 'e',      'wrap',   ['`', '`']],
-	[1, 'd',      'wrap',   ['~~', '~~']],
-	[1, 'k',      'link',   null],
-	[1, '1',      'prefix', '# '],
-	[1, '2',      'prefix', '## '],
-	[1, '3',      'prefix', '### '],
-	[1, '.',      'prefix', '> '],
-	[1, '8',      'prefix', '- '],
-	[1, '7',      'prefix', '1. '],
-	[1, '-',      'prefix', '---\n'],
-	[1, 'Enter',  'wrap',   ['```\n', '\n```']],
-	[1, 's',      'share',  null],
-	[1, 'p',      'zoom',   null],
-	[1, ' ',      'split',  null],
-	[1, 'l',      'clear',  null],
+	[1, 'b',      'wrap',   ['**', '**'],       'bold'],
+	[1, 'i',      'wrap',   ['*', '*'],         'italic'],
+	[1, 'e',      'wrap',   ['`', '`'],         'code'],
+	[1, 'd',      'wrap',   ['~~', '~~'],       'strike'],
+	[1, 'k',      'link',   null,               'link'],
+	[1, '1',      'prefix', '# ',               'h1'],
+	[1, '2',      'prefix', '## ',              'h2'],
+	[1, '3',      'prefix', '### ',             'h3'],
+	[1, '.',      'prefix', '> ',               'quote'],
+	[1, '8',      'prefix', '- ',               'list'],
+	[1, '7',      'prefix', '1. ',              'ol'],
+	[1, '-',      'prefix', '---\n',            'hr'],
+	[1, 'Enter',  'wrap',   ['```\n', '\n```'], 'block'],
+	[1, 's',      'share',  null,               'share'],
+	[1, 'p',      'zoom',   null,               'preview'],
+	[1, ' ',      'split',  null,               'split'],
+	[1, 'l',      'clear',  null,               'clear'],
 ];

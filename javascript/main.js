@@ -133,6 +133,24 @@ document.addEventListener('keydown', e => {
 	}
 });
 
+const tools = document.getElementById('tools');
+for (const t of config.toolbar.split(' ').filter(Boolean)) {
+	if (t === '|') { tools.append(document.createElement('i')); continue; }
+	const k = keys.find(k => k[1] === t);
+	if (!k) continue;
+	const b = document.createElement('button');
+	b.textContent = k[4];
+	b.title = 'C-' + k[1];
+	b.addEventListener('mousedown', e => e.preventDefault());
+	b.addEventListener('click', () => {
+		if (pending) return answer(false);
+		cmd[k[2]](k[3]);
+		inp.focus();
+		render();
+	});
+	tools.append(b);
+}
+
 for (const name of ['clear', 'reset'])
 	document.getElementById('st-' + name).addEventListener('click', () => {
 		if (pending) return answer(pending.name === name);
