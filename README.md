@@ -4,15 +4,14 @@ A markdown editor in the suckless spirit: no dependencies, no CDN, no build
 step, no tracking. Open `index.html` in a browser, that is the install.
 
 	index.html   markup
-	config.js    all configuration (keys, tabs, startup text)
-	md.js        markdown parser
-	main.js      editor and status bar
 	style.css    colours and metrics
+	javascript   config.js, md.js, main.js
+	             (configuration, parser, editor)
 	media        font and icon
 
 ## configuration
 
-Edit `config.js` and reload. Key bindings are a table of
+Edit `javascript/config.js` and reload. Key bindings are a table of
 `[ctrl, key, command, argument]`; commands are `wrap`, `prefix`, `link`,
 `share`, `zoom`, `split` and `clear`. Colours live at the top of `style.css`.
 
