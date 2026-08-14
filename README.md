@@ -12,10 +12,12 @@ step, no tracking. Open `index.html` in a browser, that is the install.
 
 Edit `javascript/config.js` and reload. Key bindings are a table of
 `[ctrl, key, command, argument, label]`; commands are `wrap`, `prefix`, `link`,
-`share`, `zoom`, `split` and `clear`. Colours live at the top of `style.css`.
+`share`, `pane`, `split`, `help` and `clear`. Colours live at the top of
+`style.css`.
 
 The toolbar is one line of that config: `toolbar` lists the keys to show, in
-order, `|` draws a separator, and an empty string removes the bar entirely.
+order, `|` draws a separator, and an empty string leaves only the two pane
+arrows in the middle.
 Buttons are labelled and titled from the same table, so they cannot drift out
 of sync with the bindings. The `controls` button in the status bar prints that
 same table, so a binding is documented the moment it exists.

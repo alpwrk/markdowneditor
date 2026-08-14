@@ -45,7 +45,7 @@ const keys = [
 	[1, '-',      'prefix', '---\n',            'hr'],
 	[1, 'Enter',  'wrap',   ['```\n', '\n```'], 'block'],
 	[1, 's',      'share',  null,               'share'],
-	[1, 'p',      'zoom',   null,               'preview'],
+	[1, 'p',      'pane',   'out',              'preview only'],
 	[1, ' ',      'split',  null,               'split'],
 	[1, 'l',      'clear',  null,               'clear'],
 	[1, '/',      'help',   null,               'controls'],

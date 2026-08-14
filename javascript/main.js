@@ -7,7 +7,7 @@ const st = {
 	cnt: document.getElementById('st-cnt'),
 };
 
-let msgtimer, view = 0, pending = null;
+let msgtimer, pending = null;
 
 function enc(s) {
 	const b = new TextEncoder().encode(s);
@@ -52,7 +52,9 @@ function status() {
 }
 
 function render() {
+	const top = out.scrollTop;
 	out.innerHTML = md(inp.value);
+	out.scrollTop = top;
 	status();
 	if (config.syncurl)
 		history.replaceState(null, '', location.pathname + '#' + enc(inp.value));
@@ -88,10 +90,11 @@ const cmd = {
 			.then(() => msg('url copied (' + location.href.length + 'b)'))
 			.catch(() => msg('clipboard denied'));
 	},
-	zoom() {
-		view = view === 2 ? 0 : 2;
-		document.body.dataset.view = view;
-		msg(view ? 'preview' : 'split');
+	/* keep is the pane that stays: 'in', 'out', or '' for both */
+	pane(keep) {
+		const v = document.body.dataset.view === keep ? '' : keep;
+		document.body.dataset.view = v;
+		msg(v === 'in' ? 'editor only' : v === 'out' ? 'preview only' : 'split');
 	},
 	split() {
 		config.split = config.split === 'v' ? 'h' : 'v';
@@ -149,13 +152,26 @@ for (const [ctrl, key, , , label] of keys) {
 	help.append(k, l);
 }
 
+/* the bar keeps the caret where it is: no focus change, no scroll to it */
+for (const b of document.querySelectorAll('#bar button'))
+	b.addEventListener('mousedown', e => e.preventDefault());
+
 document.getElementById('st-controls').addEventListener('click', () => {
 	if (pending) answer(false);
 	cmd.help();
-	inp.focus();
+	inp.focus({ preventScroll: true });
 });
 
-const tools = document.getElementById('tools');
+for (const [id, keep] of [['pane-l', 'out'], ['pane-r', 'in']]) {
+	const b = document.getElementById(id);
+	b.addEventListener('mousedown', e => e.preventDefault());
+	b.addEventListener('click', () => {
+		cmd.pane(keep);
+		inp.focus({ preventScroll: true });
+	});
+}
+
+const tools = document.getElementById('tb');
 for (const t of config.toolbar.split(' ').filter(Boolean)) {
 	if (t === '|') { tools.append(document.createElement('i')); continue; }
 	const k = keys.find(k => k[1] === t);
@@ -189,7 +205,7 @@ window.addEventListener('hashchange', () => {
 });
 
 document.body.dataset.split = config.split;
-document.body.dataset.view = 0;
+document.body.dataset.view = '';
 
 try {
 	const h = location.hash.slice(1);

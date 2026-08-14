@@ -33,19 +33,21 @@ body {
 }
 
 #tools {
-	display: flex;
+	display: grid;
+	grid-template-columns: 1fr auto 1fr;
 	align-items: center;
-	gap: 2px;
 	height: var(--bar);
 	padding: 0 6px;
 	background: var(--bg);
 	border-bottom: 1px solid var(--bord);
 	white-space: nowrap;
-	overflow-x: auto;
 }
 
-#tools:empty { display: none }
-#tools::-webkit-scrollbar { height: 0 }
+#tb, #panes { display: flex; align-items: center; height: 100% }
+#tb { gap: 2px; min-width: 0; overflow-x: auto }
+#tb:empty { display: none }
+#tb::-webkit-scrollbar { height: 0 }
+#panes { gap: 6px }
 
 #tools button {
 	background: none;
@@ -60,6 +62,12 @@ body {
 #tools button:hover { background: var(--sel); color: var(--hi) }
 #tools button:active { background: var(--hi); color: var(--bg) }
 #tools i { flex: none; width: 1px; height: 60%; margin: 0 5px; background: var(--bord) }
+
+body[data-split="h"] #panes button { transform: rotate(90deg) }
+body[data-view="out"] #pane-l, body[data-view="in"] #pane-r {
+	background: var(--sel);
+	color: var(--hi);
+}
 
 #main { display: flex; flex: 1; min-height: 0; position: relative }
 
@@ -101,7 +109,9 @@ body[data-split="h"] #main { flex-direction: column }
 #in::selection, #out ::selection, #out::selection { background: var(--sel); color: var(--hi) }
 body[data-split="v"] #out { border-left: 1px solid var(--bord) }
 body[data-split="h"] #out { border-top: 1px solid var(--bord) }
-body[data-view="2"] #in { display: none }
+body[data-view="in"] #out { display: none }
+body[data-view="out"] #in { display: none }
+body[data-view="out"] #out { border: 0 }
 
 #out { padding: 8px 14px }
 
