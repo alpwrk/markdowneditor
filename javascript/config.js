@@ -6,6 +6,7 @@ const config = {
 	syncurl: true,
 	msgtimeout: 1200,
 	autosave: 'md.doc',
+	theme: 'md.theme',
 
 	split: 'v',
 

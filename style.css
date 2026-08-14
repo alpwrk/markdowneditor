@@ -14,9 +14,36 @@
 	--hi:   #eeeeee;
 	--sel:  #005577;
 	--bord: #444444;
+	--link: #7ab0c8;
 	--font: "JetBrains Mono", "Liberation Mono", monospace;
 	--size: 15px;
-	--bar:  20px;
+	--bar:  23px;
+	--pad:  9px;
+}
+
+/* light: the browser preference decides, the theme button overrides it */
+@media (prefers-color-scheme: light) {
+	:root:not([data-theme="dark"]) {
+		--bg:   #ffffff;
+		--bg2:  #ffffff;
+		--fg:   #333333;
+		--fg2:  #777777;
+		--hi:   black;
+		--sel:  #b4d5e8;
+		--bord: #cccccc;
+		--link: #14618f;
+	}
+}
+
+:root[data-theme="light"] {
+	--bg:   #ffffff;
+	--bg2:  #ffffff;
+	--fg:   #333333;
+	--fg2:  #777777;
+	--hi:   black;
+	--sel:  #b4d5e8;
+	--bord: #cccccc;
+	--link: #14618f;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0 }
@@ -55,13 +82,15 @@ body {
 	color: var(--fg2);
 	font: 12px/var(--bar) var(--font);
 	height: 100%;
-	padding: 0 6px;
+	padding: 0 var(--pad);
 	cursor: pointer;
 }
 
 #tools button:hover { background: var(--sel); color: var(--hi) }
 #tools button:active { background: var(--hi); color: var(--bg) }
 #tools i { flex: none; width: 1px; height: 60%; margin: 0 5px; background: var(--bord) }
+
+#tools #theme { justify-self: end; background: var(--hi); color: var(--bg) }
 
 body[data-split="h"] #panes button { transform: rotate(90deg) }
 body[data-view="out"] #pane-l, body[data-view="in"] #pane-r {
@@ -131,7 +160,7 @@ body[data-view="out"] #out { border: 0 }
 	white-space: nowrap;
 }
 
-#st-mode, #bar button, #st-src { background: var(--sel); color: var(--hi); padding: 0 6px }
+#st-mode, #bar button, #st-src { background: var(--sel); color: var(--hi); padding: 0 var(--pad) }
 
 #bar button, #st-src {
 	border: 0;
@@ -144,7 +173,7 @@ body[data-view="out"] #out { border: 0 }
 #st-src { background: var(--hi); color: var(--bg); text-decoration: none }
 #st-src:hover { background: var(--sel); color: var(--hi) }
 #st-msg { color: var(--hi); overflow: hidden; text-overflow: ellipsis }
-#st-msg.ask { background: var(--sel); padding: 0 6px }
+#st-msg.ask { background: var(--sel); padding: 0 var(--pad) }
 #st-pos { margin-left: auto }
 
 #out > *:first-child { margin-top: 0 }
@@ -163,7 +192,7 @@ body[data-view="out"] #out { border: 0 }
 #out strong { color: var(--hi) }
 #out em { font-style: italic }
 #out del { color: var(--fg2) }
-#out a { color: #7ab0c8 }
+#out a { color: var(--link) }
 #out a:hover { color: var(--hi) }
 
 #out code { background: var(--bg); color: var(--hi); padding: 0 3px }

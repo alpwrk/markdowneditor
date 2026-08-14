@@ -9,6 +9,10 @@ const st = {
 
 let msgtimer, pending = null;
 
+/* restored first, so a pinned theme does not flash the other one */
+const saved = config.theme && localStorage.getItem(config.theme);
+if (saved) document.documentElement.dataset.theme = saved;
+
 function enc(s) {
 	const b = new TextEncoder().encode(s);
 	let bin = '';
@@ -100,6 +104,14 @@ const cmd = {
 		config.split = config.split === 'v' ? 'h' : 'v';
 		document.body.dataset.split = config.split;
 	},
+	/* without a choice the browser preference rules, a click pins one */
+	theme() {
+		const r = document.documentElement;
+		const light = r.dataset.theme ? r.dataset.theme === 'light' :
+			matchMedia('(prefers-color-scheme: light)').matches;
+		r.dataset.theme = light ? 'dark' : 'light';
+		if (config.theme) localStorage.setItem(config.theme, r.dataset.theme);
+	},
 	help() {
 		document.body.dataset.help = document.body.dataset.help ? '' : '1';
 	},
@@ -170,6 +182,10 @@ for (const [id, keep] of [['pane-l', 'out'], ['pane-r', 'in']]) {
 		inp.focus({ preventScroll: true });
 	});
 }
+
+const th = document.getElementById('theme');
+th.addEventListener('mousedown', e => e.preventDefault());
+th.addEventListener('click', () => cmd.theme());
 
 const tools = document.getElementById('tb');
 for (const t of config.toolbar.split(' ').filter(Boolean)) {
