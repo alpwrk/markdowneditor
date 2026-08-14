@@ -1,6 +1,6 @@
 @font-face {
 	font-family: "JetBrains Mono";
-	src: url("JetBrainsMono-ExtraBold.woff2") format("woff2");
+	src: url("media/JetBrainsMono-ExtraBold.woff2") format("woff2");
 	font-weight: 100 900;
 	font-style: normal;
 	font-display: block;
@@ -73,9 +73,9 @@ body[data-view="2"] #in { display: none }
 	white-space: nowrap;
 }
 
-#st-mode, #bar button { background: var(--sel); color: var(--hi); padding: 0 6px }
+#st-mode, #bar button, #st-src { background: var(--sel); color: var(--hi); padding: 0 6px }
 
-#bar button {
+#bar button, #st-src {
 	border: 0;
 	font: 12px/var(--bar) var(--font);
 	height: 100%;
@@ -83,6 +83,8 @@ body[data-view="2"] #in { display: none }
 }
 
 #bar button:hover { background: var(--hi); color: var(--bg) }
+#st-src { background: var(--hi); color: var(--bg); text-decoration: none }
+#st-src:hover { background: var(--sel); color: var(--hi) }
 #st-msg { color: var(--hi); overflow: hidden; text-overflow: ellipsis }
 #st-msg.ask { background: var(--sel); padding: 0 6px }
 #st-pos { margin-left: auto }

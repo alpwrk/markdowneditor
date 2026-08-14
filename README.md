@@ -8,6 +8,7 @@ step, no tracking. Open `index.html` in a browser, that is the install.
 	md.js        markdown parser
 	main.js      editor and status bar
 	style.css    colours and metrics
+	media        font and icon
 
 ## configuration
 
