@@ -5,8 +5,7 @@ step, no tracking. Open `index.html` in a browser, that is the install.
 
 	index.html   markup
 	style.css    colours and metrics
-	javascript   config.js, md.js, main.js
-	             (configuration, parser, editor)
+	javascript   config.js, md.js, main.js (configuration, parser, editor)
 	media        font and icon
 
 ## configuration
