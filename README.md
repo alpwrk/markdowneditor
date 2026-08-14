@@ -17,19 +17,21 @@ Edit `javascript/config.js` and reload. Key bindings are a table of
 The toolbar is one line of that config: `toolbar` lists the keys to show, in
 order, `|` draws a separator, and an empty string removes the bar entirely.
 Buttons are labelled and titled from the same table, so they cannot drift out
-of sync with the bindings.
+of sync with the bindings. The `controls` button in the status bar prints that
+same table, so a binding is documented the moment it exists.
 
 ## keys
 
-	C-b     bold              C-1..3   heading
-	C-i     italic            C-.      quote
-	C-e     code              C-8      unordered list
-	C-d     strike            C-7      ordered list
-	C-k     link              C--      rule
-	C-Enter code block        C-l      clear
+	Ctrl-b     bold           Ctrl-1..3   heading
+	Ctrl-i     italic         Ctrl-.      quote
+	Ctrl-e     code           Ctrl-8      unordered list
+	Ctrl-d     strike         Ctrl-7      ordered list
+	Ctrl-k     link           Ctrl--      rule
+	Ctrl-Enter code block     Ctrl-l      clear
 
-	C-s     copy share url    C-p      toggle preview only
-	C-Space toggle split direction
+	Ctrl-s     copy share url Ctrl-p      toggle preview only
+	Ctrl-Space toggle split direction
+	Ctrl-/     controls, the same list inside the editor (Esc closes it)
 
 ## sharing
 

@@ -97,6 +97,9 @@ const cmd = {
 		config.split = config.split === 'v' ? 'h' : 'v';
 		document.body.dataset.split = config.split;
 	},
+	help() {
+		document.body.dataset.help = document.body.dataset.help ? '' : '1';
+	},
 	clear() {
 		ask('clear', 'clear the document', () => {
 			inp.value = '';
@@ -117,6 +120,10 @@ document.addEventListener('keydown', e => {
 		e.preventDefault();
 		return answer(e.key === 'y' || e.key === 'Y');
 	}
+	if (e.key === 'Escape' && document.body.dataset.help) {
+		e.preventDefault();
+		return cmd.help();
+	}
 	if (e.key === 'Tab' && e.target === inp) {
 		e.preventDefault();
 		const t = config.softtabs ? ' '.repeat(config.tabwidth) : '\t';
@@ -133,6 +140,21 @@ document.addEventListener('keydown', e => {
 	}
 });
 
+const help = document.getElementById('help');
+for (const [ctrl, key, , , label] of keys) {
+	if (!label) continue;
+	const k = document.createElement('b'), l = document.createElement('span');
+	k.textContent = (ctrl ? 'Ctrl-' : '') + (key === ' ' ? 'Space' : key);
+	l.textContent = label;
+	help.append(k, l);
+}
+
+document.getElementById('st-controls').addEventListener('click', () => {
+	if (pending) answer(false);
+	cmd.help();
+	inp.focus();
+});
+
 const tools = document.getElementById('tools');
 for (const t of config.toolbar.split(' ').filter(Boolean)) {
 	if (t === '|') { tools.append(document.createElement('i')); continue; }
@@ -140,7 +162,7 @@ for (const t of config.toolbar.split(' ').filter(Boolean)) {
 	if (!k) continue;
 	const b = document.createElement('button');
 	b.textContent = k[4];
-	b.title = 'C-' + k[1];
+	b.title = 'Ctrl-' + k[1];
 	b.addEventListener('mousedown', e => e.preventDefault());
 	b.addEventListener('click', () => {
 		if (pending) return answer(false);

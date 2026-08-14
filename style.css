@@ -61,7 +61,26 @@ body {
 #tools button:active { background: var(--hi); color: var(--bg) }
 #tools i { flex: none; width: 1px; height: 60%; margin: 0 5px; background: var(--bord) }
 
-#main { display: flex; flex: 1; min-height: 0 }
+#main { display: flex; flex: 1; min-height: 0; position: relative }
+
+#help {
+	display: none;
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	z-index: 1;
+	grid-template-columns: auto auto;
+	gap: 0 14px;
+	padding: 8px 12px;
+	background: var(--bg2);
+	border: 1px solid var(--bord);
+	font-size: 12px;
+	line-height: 1.6;
+}
+
+body[data-help="1"] #help { display: grid }
+#help b { color: var(--hi); font-weight: 400 }
+
 body[data-split="h"] #main { flex-direction: column }
 
 #in, #out { flex: 1 1 50%; min-width: 0; min-height: 0; overflow: auto }
@@ -151,7 +170,8 @@ body[data-view="2"] #in { display: none }
 	padding-left: 10px;
 	color: var(--fg2);
 }
-#out ul, #out ol { padding-left: 1.4em }
+#out ul { padding-left: 1.4em }
+#out ol { padding-left: 2.4em }
 #out li::marker { color: var(--fg2) }
 
 #out table { border-collapse: collapse; width: 100% }
