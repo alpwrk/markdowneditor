@@ -70,11 +70,12 @@ body {
 	white-space: nowrap;
 }
 
-#tb, #panes { display: flex; align-items: center; height: 100% }
+#tb, #panes, #right { display: flex; align-items: center; height: 100% }
 #tb { gap: 2px; min-width: 0; overflow-x: auto }
 #tb:empty { display: none }
 #tb::-webkit-scrollbar { height: 0 }
 #panes { gap: 6px }
+#right { gap: 6px }
 
 #tools button {
 	background: none;
@@ -90,7 +91,8 @@ body {
 #tools button:active { background: var(--hi); color: var(--bg) }
 #tools i { flex: none; width: 1px; height: 60%; margin: 0 5px; background: var(--bord) }
 
-#tools #theme { justify-self: end; background: var(--hi); color: var(--bg) }
+#tools #right { grid-column: 3; justify-self: end }
+#tools #linkshort, #tools #theme { background: var(--hi); color: var(--bg) }
 
 body[data-split="h"] #panes button { transform: rotate(90deg) }
 body[data-view="out"] #pane-l, body[data-view="in"] #pane-r {

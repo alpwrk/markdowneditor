@@ -187,6 +187,22 @@ const th = document.getElementById('theme');
 th.addEventListener('mousedown', e => e.preventDefault());
 th.addEventListener('click', () => cmd.theme());
 
+const alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+function shortcode(n) {
+	const r = new Uint32Array(n);
+	crypto.getRandomValues(r);
+	return Array.from(r, x => alphabet[x % alphabet.length]).join('');
+}
+
+const ls = document.getElementById('linkshort');
+ls.addEventListener('mousedown', e => e.preventDefault());
+ls.addEventListener('click', () => {
+	const url = config.shortbase + '/' + shortcode(config.shortlen);
+	navigator.clipboard.writeText(url)
+		.then(() => msg('short url copied'))
+		.catch(() => msg('clipboard denied'));
+});
+
 const tools = document.getElementById('tb');
 for (const t of config.toolbar.split(' ').filter(Boolean)) {
 	if (t === '|') { tools.append(document.createElement('i')); continue; }
