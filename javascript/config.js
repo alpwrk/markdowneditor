@@ -3,9 +3,6 @@ const config = {
 	softtabs: true,
 	linebreaks: true,
 
-	shortbase: 'https://markdown.baden.club',
-	shortlen: 8,
-
 	syncurl: true,
 	msgtimeout: 1200,
 	autosave: 'md.doc',
